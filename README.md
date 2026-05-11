@@ -2,8 +2,9 @@
 
 > A conversational AI-powered brand identity builder that lets you create and manage multiple brands, each with their own isolated chat context and evolving brand summary.
 
-🎥 **Loom Walkthrough:** Video 1 - https://www.loom.com/share/fcb5d9e7cc354a8393d964f2e2645092
-Video 2 - https://www.loom.com/share/748094b8ddd34428adf5c1b02a98ccf4
+🎥 **Loom Walkthrough:**
+- Video 1 - https://www.loom.com/share/fcb5d9e7cc354a8393d964f2e2645092
+- Video 2 - https://www.loom.com/share/748094b8ddd34428adf5c1b02a98ccf4
 
 ---
 
@@ -125,6 +126,7 @@ Every DB query is filtered by `brand_id`. Brand A's summary and messages are nev
 ### How LLM is Integrated
 
 The system prompt sent to Groq instructs it to:
+
 1. Act as an expert brand strategist
 2. Use the current brand summary as its foundation
 3. Return a strict JSON response: `{ reply: string, updated_summary: object }`
@@ -145,7 +147,7 @@ The backend parses this JSON response, extracts the reply for the user and the u
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/paramsorniya/ai-brand-assistant
 cd ai-brand-assistant
 ```
 
@@ -226,15 +228,25 @@ curl http://localhost:3001/api/health
 
 ## API Reference
 
+### Health Check
+
+```bash
+curl http://localhost:3001/api/health
+```
+
+**Response:**
+```json
+{ "status": "ok" }
+```
+
+---
+
 ### Create a Brand
 
 ```bash
-POST /api/brands
-Content-Type: application/json
-
-{
-  "name": "Fitness Brand"
-}
+curl -X POST http://localhost:3001/api/brands \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Fitness Brand"}'
 ```
 
 **Response:**
@@ -252,7 +264,7 @@ Content-Type: application/json
 ### List All Brands
 
 ```bash
-GET /api/brands
+curl http://localhost:3001/api/brands
 ```
 
 **Response:**
@@ -278,7 +290,7 @@ GET /api/brands
 ### Get Brand with Chat History
 
 ```bash
-GET /api/brands/:id
+curl http://localhost:3001/api/brands/your-brand-uuid-here
 ```
 
 **Response:**
@@ -306,13 +318,9 @@ GET /api/brands/:id
 ### Send a Chat Message
 
 ```bash
-POST /api/chat
-Content-Type: application/json
-
-{
-  "brand_id": "uuid-1",
-  "message": "I want a fitness brand for young men"
-}
+curl -X POST http://localhost:3001/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"brand_id": "your-brand-uuid-here", "message": "I want a fitness brand for young men"}'
 ```
 
 **Response:**
@@ -331,42 +339,29 @@ Content-Type: application/json
 }
 ```
 
-**Follow-up message (context-aware):**
+---
+
+### Follow-up Message (Context-Aware)
 
 ```bash
-POST /api/chat
-Content-Type: application/json
-
-{
-  "brand_id": "uuid-1",
-  "message": "Make it more luxurious and also target women athletes"
-}
+curl -X POST http://localhost:3001/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"brand_id": "your-brand-uuid-here", "message": "Make it more luxurious and also target women athletes"}'
 ```
 
-The AI will build on the existing brand identity — it already knows about FORGED, the tagline, the audience — and only update what you asked to change.
-
-**Switch brand:**
-
-```bash
-POST /api/chat
-Content-Type: application/json
-
-{
-  "brand_id": "uuid-2",
-  "message": "I want a luxury fashion brand for Paris elite"
-}
-```
-
-Using a different `brand_id` automatically uses that brand's own isolated context.
+The AI builds on the existing brand identity — it already knows the brand name, tagline, and audience — and only updates what you asked to change.
 
 ---
 
-### Health Check
+### Switch Brand (Context Isolation Test)
 
 ```bash
-GET /api/health
-# { "status": "ok" }
+curl -X POST http://localhost:3001/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"brand_id": "different-brand-uuid-here", "message": "I want a luxury fashion brand for Paris elite"}'
 ```
+
+Using a different `brand_id` automatically loads that brand's own isolated context. No crossover with other brands.
 
 ---
 
