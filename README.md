@@ -3,7 +3,7 @@
 > A conversational AI-powered brand identity builder that lets you create and manage multiple brands, each with their own isolated chat context and evolving brand summary.
 
 🎥 **Loom Walkthrough:** Video 1 - https://www.loom.com/share/fcb5d9e7cc354a8393d964f2e2645092
-                          Video 2 - https://www.loom.com/share/748094b8ddd34428adf5c1b02a98ccf4
+Video 2 - https://www.loom.com/share/748094b8ddd34428adf5c1b02a98ccf4
 
 ---
 
